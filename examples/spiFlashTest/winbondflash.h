@@ -40,23 +40,6 @@ public:
   uint16_t sectors();
   uint16_t blocks();
 
-<<<<<<< HEAD
-  uint16_t read(uint32_t addr,uint8_t *buf,uint16_t n=256);
-
-  void setWriteEnable(bool cmd = true);
-  inline void WE(bool cmd = true) {setWriteEnable(cmd);}
-  
-  //WE() every time before write or erase
-  void writePage(uint32_t addr_start,uint8_t *buf);//addr is 8bit-aligned, 0x00ffff00
-  //write a page, sizeof(buf) is 256 bytes
-  void eraseSector(uint32_t addr);//addr is 12bit-aligned, 0x00fff000
-  //erase a sector ( 4096bytes ), return false if error
-  void erase32kBlock(uint32_t addr);//addr is 15bit-aligned, 0x00ff8000
-  //erase a 32k block ( 32768b )
-  void erase64kBlock(uint32_t addr);//addr is 16bit-aligned, 0x00ff0000
-  //erase a 64k block ( 65536b )
-  void eraseAll();
-=======
   uint16_t read (uint32_t addr,uint8_t *buf,uint16_t n=256);
 
   void setWriteEnable(bool cmd = true);
@@ -74,22 +57,18 @@ public:
   bool erase64kBlock(uint32_t addr_start,uint32_t n=65536);
   //erase multiple 64k blocks ( 65536b )
   bool eraseAll();
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   //chip erase, return true if successfully started, busy()==false -> erase complete
 
   void eraseSuspend();
   void eraseResume();
 
   bool busy();
-<<<<<<< HEAD
-=======
   bool sync();//wait all operations complete
   //return true when exit normally, return false = timeout
 
   inline void setTimeout(uint16_t ms) {m_timeout=ms;}
   //timeout == 0 -> do once, timeout < 0 -> wait forever
   inline uint16_t timeout() {return m_timeout;}
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   
   uint8_t  readManufacturer();
   uint16_t readPartID();
@@ -98,15 +77,11 @@ public:
 
 private:
   partNumber partno;
-<<<<<<< HEAD
-  bool checkPartNo(partNumber _partno);
-=======
   uint16_t m_timeout;
   uint8_t w_cmd;
   
   bool checkPartNo(partNumber _partno);
   void setWEL();
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
 
 protected:
   virtual void select() = 0;
