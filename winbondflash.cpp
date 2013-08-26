@@ -7,10 +7,6 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-<<<<<<< HEAD
-=======
-#include <Metro.h>
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
 #include <errno.h>
 #include "winbondflash.h"
 
@@ -63,22 +59,6 @@ static const pnListType pnList[] PROGMEM = {
     { winbondFlashClass::W25Q128,0x4018,16777216,65536,4096,256 }
 };
   
-<<<<<<< HEAD
-=======
-void winbondFlashClass::setWriteEnable(bool cmd)
-{
-  w_cmd = cmd ? W_EN : W_DE;
-}
-
-bool winbondFlashClass::writeEnable()
-{
-  if(w_cmd == W_EN)
-    return true;
-  w_cmd = W_DE;
-  return false;
-}
-
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
 uint16_t winbondFlashClass::readSR()
 {
   uint8_t r1,r2;
@@ -150,7 +130,6 @@ bool winbondFlashClass::checkPartNo(partNumber _partno)
   id |= transfer(0x00);
   deselect();
 
-<<<<<<< HEAD
 //  Serial.print("MANUF=0x");
 //  Serial.print(manuf,HEX);
 //  Serial.print(",ID=0x");
@@ -168,45 +147,18 @@ bool winbondFlashClass::checkPartNo(partNumber _partno)
   if(_partno == autoDetect)
   {
 //    Serial.print("Autodetect...");
-=======
-  Serial.print("MANUF=0x");
-  Serial.print(manuf,HEX);
-  Serial.print(",ID=0x");
-  Serial.print(id,HEX);
-  Serial.println();
-  
-  if(manuf != WINBOND_MANUF)
-    return false;
-  Serial.println("MANUF OK");
-
-  if(_partno == custom)
-    return true;
-  Serial.println("Not a custom chip type");
-
-  if(_partno == autoDetect)
-  {
-    Serial.print("Autodetect...");
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
     for(int i=0;i<sizeof(pnList)/sizeof(pnList[0]);i++)
     {
       if(id == pgm_read_word(&(pnList[i].id)))
       {
         _partno = (partNumber)pgm_read_byte(&(pnList[i].pn));
-<<<<<<< HEAD
         //Serial.println("OK");
-=======
-        Serial.println("OK");
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
         return true;
       }
     }
     if(_partno == autoDetect)
     {
-<<<<<<< HEAD
 //      Serial.println("Failed");
-=======
-      Serial.println("Failed");
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
       return false;
     }
   }
@@ -222,11 +174,7 @@ bool winbondFlashClass::checkPartNo(partNumber _partno)
         return false;
     }
   }
-<<<<<<< HEAD
 //  Serial.println("partNumber not found");
-=======
-  Serial.println("partNumber not found");
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   return false;//partNo not found
 }
 
@@ -242,32 +190,11 @@ bool winbondFlashClass::busy()
   return false;
 }
 
-<<<<<<< HEAD
 void winbondFlashClass::setWriteEnable(bool cmd)
 {
   select();
   transfer( cmd ? W_EN : W_DE );
   deselect();
-=======
-bool winbondFlashClass::sync(void)
-{
-  Metro tt(m_timeout);
-  uint8_t c;
-  select();
-  transfer(R_SR1);
-  do {
-    c = transfer(0x00);
-    //Serial.println(c,HEX);
-    if((c & SR1_BUSY_MASK) == 0) //not busy
-    {
-      deselect();
-      return true;
-    }
-//    if(timeout == 0) break;
-  }while(tt.check() == 0|| (m_timeout < 0));
-  deselect();
-  return false;
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
 }
 
 long winbondFlashClass::bytes()
@@ -320,21 +247,11 @@ uint16_t winbondFlashClass::blocks()
 
 bool winbondFlashClass::begin(partNumber _partno)
 {
-<<<<<<< HEAD
-=======
-  m_timeout = DEFAULT_TIMEOUT;
-  w_cmd = W_DE;
-  
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   select();
   transfer(RELEASE);
   deselect();
   delayMicroseconds(5);//>3us
-<<<<<<< HEAD
 //  Serial.println("Chip Released");
-=======
-  Serial.println("Chip Released");
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   
   if(!checkPartNo(_partno))
     return false;
@@ -348,26 +265,11 @@ void winbondFlashClass::end()
   delayMicroseconds(5);//>3us
 }
 
-<<<<<<< HEAD
 uint16_t winbondFlashClass::read (uint32_t addr,uint8_t *buf,uint16_t n)
 {
   if(busy())
     return 0;
   
-=======
-void winbondFlashClass::setWEL()
-{
-  select();
-  transfer(w_cmd);
-  deselect();
-}
-
-uint16_t winbondFlashClass::read (uint32_t addr,uint8_t *buf,uint16_t n)
-{
-  if(!sync())
-    return 0;
-    
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   select();
   transfer(READ);
   transfer(addr>>16);
@@ -382,7 +284,6 @@ uint16_t winbondFlashClass::read (uint32_t addr,uint8_t *buf,uint16_t n)
   return n;
 }
 
-<<<<<<< HEAD
 void winbondFlashClass::writePage(uint32_t addr_start,uint8_t *buf)
 {
   select();
@@ -400,163 +301,32 @@ void winbondFlashClass::writePage(uint32_t addr_start,uint8_t *buf)
 
 void winbondFlashClass::eraseSector(uint32_t addr_start)
 {
-=======
-uint16_t winbondFlashClass::write(uint32_t addr,uint8_t *buf,uint16_t n)
-{
-  uint16_t i = 0;
-  
-  if(addr & 0x000000ff)
-  {
-    uint8_t k;
-    k = 0xff - (uint8_t)addr + 1;
-    //remaining bytes in current page
-    if(!sync())
-    {
-      Serial.println("Busy: timeout");
-      return 0;
-    }
-    setWEL();
-    //write min(n,k) bytes
-    uint8_t a = n > k ? k : n;
-    select();
-    transfer(PAGE_PGM);
-    transfer((uint8_t)(addr>>16));
-    transfer((uint8_t)(addr>>8));
-    transfer((uint8_t)addr);
-    for(i=0;i<a;i++)
-    {
-      transfer(buf[i]);
-    }
-    deselect();
-    
-    if(n<=k) //all data written
-      return i;
-      
-    n -= k;
-    addr = addr&0x00ffff00 + 256UL;
-  }
-  
-  uint16_t end_page = (addr + (uint32_t)n) >> 8;
-  for(uint16_t start_page=addr>>8;start_page<end_page;start_page++)
-  {
-    if(!sync())
-    {
-      //Serial.println("Busy: timeout");
-      return i;
-    }
-    //Serial.println("Sync OK");
-    setWEL();
-    select();
-    transfer(PAGE_PGM);
-    transfer(start_page>>8);
-    transfer(start_page);
-    transfer(0x00);
-    uint8_t *tbuf = buf+i;
-    uint8_t j = 0;
-    do {
-      transfer(tbuf[j]);
-      j++;
-    }while(j != 0);
-    i+=256;
-    deselect();
-  }
-  
-  if(i < n)
-  {
-    if(!sync())
-      return i;
-    setWEL();
-    select();
-    transfer(PAGE_PGM);
-    transfer(end_page>>8);
-    transfer(end_page);
-    transfer(0x00);
-    uint8_t *tbuf = buf+i;
-    for(uint8_t j=0;j<=n-i;j++)
-      transfer(tbuf[j]);
-    deselect();
-  }
-  
-  return n;
-}
-
-bool winbondFlashClass::erase(uint32_t addr,uint32_t n)
-{
-  return false;
-}
-
-bool winbondFlashClass::eraseSector(uint32_t addr_start,uint32_t n)
-{
-  if(n==0)
-    return false;
-  if(n%4096) //test if n is 12bit-aligned
-    return false;
-  if(addr_start & 0x00000fff) //test if addr_start is 12bit-aligned
-    return false;
-    
-  setWEL();
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   select();
   transfer(SECTOR_E);
   transfer(addr_start>>16);
   transfer(addr_start>>8);
   transfer(addr_start);
   deselect();
-<<<<<<< HEAD
 }
 
 void winbondFlashClass::erase32kBlock(uint32_t addr_start)
 {
-=======
-  
-  return true;  
-}
-
-bool winbondFlashClass::erase32kBlock(uint32_t addr_start,uint32_t n)
-{
-  if(n==0)
-    return false;
-  if(n%32768) //test if n is 15bit-aligned
-    return false;
-  if(addr_start & 0x00007fff) //test if addr_start is 15bit-aligned
-    return false;
-    
-  setWEL();
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   select();
   transfer(BLK_E_32K);
   transfer(addr_start>>16);
   transfer(addr_start>>8);
   transfer(addr_start);
   deselect();
-<<<<<<< HEAD
 }
 
 void winbondFlashClass::erase64kBlock(uint32_t addr_start)
 {
-=======
-  
-  return true;
-}
-
-bool winbondFlashClass::erase64kBlock(uint32_t addr_start,uint32_t n)
-{
-  if(n==0)
-    return false;
-  if(n%65536) //test if n is 16bit-aligned
-    return false;
-  if(addr_start & 0x0000ffff) //test if addr_start is 16bit-aligned
-    return false;
-    
-  setWEL();
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
   select();
   transfer(BLK_E_64K);
   transfer(addr_start>>16);
   transfer(addr_start>>8);
   transfer(addr_start);
   deselect();
-<<<<<<< HEAD
 }
 
 void winbondFlashClass::eraseAll()
@@ -564,21 +334,6 @@ void winbondFlashClass::eraseAll()
   select();
   transfer(CHIP_ERASE);
   deselect();
-=======
-  
-  return true;
-}
-
-bool winbondFlashClass::eraseAll()
-{
-  if(!sync())
-    return false;
-  setWEL();
-  select();
-  transfer(CHIP_ERASE);
-  deselect();
-  return true;
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
 }
 
 void winbondFlashClass::eraseSuspend()
@@ -606,11 +361,7 @@ bool winbondFlashSPI::begin(partNumber _partno,SPIClass &_spi,uint8_t _nss)
   spi.setClockDivider(SPI_CLOCK_DIV2);
   spi.setDataMode(SPI_MODE0);
   deselect();
-<<<<<<< HEAD
   //Serial.println("SPI OK");
-=======
-  Serial.println("SPI OK");
->>>>>>> da2a99931b650ba3158afa00b20c2e51e02941a2
 
   return winbondFlashClass::begin(_partno);
 }
